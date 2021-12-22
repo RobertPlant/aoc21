@@ -1,0 +1,14 @@
+* Advent of Code 2021
+** Day 1
+*** Spec: Part 1
+*** Answer: Part 1
+#+begin_src bash :results output :exports both
+    cd day01
+    cargo test
+#+end_src
+
+
+#+begin_src bash :results output :exports both
+    cd day01
+    cargo run
+#+end_src
