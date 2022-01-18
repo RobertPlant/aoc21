@@ -1,3 +1,4 @@
+#![feature(iter_advance_by)]
 mod input;
 
 fn calc(input: &'static str, length: usize) -> usize {
@@ -31,12 +32,70 @@ fn calc(input: &'static str, length: usize) -> usize {
     (gamma * epsilon).try_into().unwrap()
 }
 
+fn find_oxygen(input: Vec<&str>, max: u32, pos: usize, default_search: u32) -> Vec<&str> {
+    let mut val = 0;
+    let mut search = default_search;
+    let mut lines: Vec<&str> = Vec::with_capacity((max).try_into().unwrap());
+
+    for line in input.clone() {
+        let mut iter = line.chars();
+        iter.advance_by(pos).unwrap();
+        let char = iter.next().unwrap();
+        let parsed = char.to_digit(10).unwrap();
+
+        val = val + parsed;
+    }
+
+    if val >= (max - val) {
+        search = if default_search == 1 { 0 } else { 1 };
+    }
+
+    let mut key = 0;
+    for line in input {
+        let mut iter = line.chars();
+        iter.advance_by(pos).unwrap();
+        let char = iter.next().unwrap();
+        let parsed = char.to_digit(10).unwrap();
+
+        match parsed {
+            val if val == search => {
+                lines.push(line.chars().as_str());
+            }
+            _ => (),
+        };
+
+        key = key + 1;
+    }
+
+    if lines.len() != 1 {
+        return find_oxygen(
+            lines.clone(),
+            (lines.len()).try_into().unwrap(),
+            pos + 1,
+            default_search,
+        );
+    } else {
+        return lines;
+    }
+}
+
+fn calc_p2(input: &'static str) -> usize {
+    let max: u32 = (input.lines().count()).try_into().unwrap();
+
+    let mut oxygen_vec = find_oxygen(input.lines().collect(), max, 0, 0);
+    let oxygen = isize::from_str_radix(oxygen_vec.pop().unwrap(), 2).unwrap();
+
+    let mut carbon_dioxide_vec = find_oxygen(input.lines().collect(), max, 0, 1);
+    let carbon_dioxide = isize::from_str_radix(carbon_dioxide_vec.pop().unwrap(), 2).unwrap();
+
+    (oxygen * carbon_dioxide).try_into().unwrap()
+}
+
 fn main() {
     let input_data = input::get_input();
 
-    let total = calc(input_data, 12);
-
-    println!("Found {:?}", total);
+    println!("Found {:?}", calc(input_data, 12));
+    println!("Found P2 {:?}", calc_p2(input_data));
 }
 
 #[cfg(test)]
@@ -62,6 +121,27 @@ mod tests {
                 5,
             ),
             198
+        )
+    }
+
+    #[test]
+    fn test_p2() {
+        assert_eq!(
+            calc_p2(
+                "00100
+11110
+10110
+10111
+10101
+01111
+00111
+11100
+10000
+11001
+00010
+01010",
+            ),
+            230
         )
     }
 }
