@@ -1,4 +1,3 @@
-#![feature(iter_advance_by)]
 mod input;
 
 fn calc(input: &'static str, length: usize) -> usize {
@@ -39,8 +38,7 @@ fn find_oxygen(input: Vec<&str>, max: u32, pos: usize, default_search: u32) -> V
 
     for line in input.clone() {
         let mut iter = line.chars();
-        iter.advance_by(pos).unwrap();
-        let char = iter.next().unwrap();
+        let char = iter.nth(pos).unwrap();
         let parsed = char.to_digit(10).unwrap();
 
         val = val + parsed;
@@ -53,8 +51,7 @@ fn find_oxygen(input: Vec<&str>, max: u32, pos: usize, default_search: u32) -> V
     let mut key = 0;
     for line in input {
         let mut iter = line.chars();
-        iter.advance_by(pos).unwrap();
-        let char = iter.next().unwrap();
+        let char = iter.nth(pos).unwrap();
         let parsed = char.to_digit(10).unwrap();
 
         match parsed {

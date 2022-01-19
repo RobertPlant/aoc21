@@ -420,7 +420,14 @@ decimal, not binary.)
     cargo test
 #+end_src
 
-#+RESULTS
+#+RESULTS:
+:
+: running 2 tests
+: test tests::test ... ok
+: test tests::test_p2 ... ok
+:
+: test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+:
 
 
 #+begin_src bash :results output :exports both
@@ -429,3 +436,5 @@ decimal, not binary.)
 #+end_src
 
 #+RESULTS:
+: Found 3374136
+: Found P2 4432698
