@@ -2,43 +2,48 @@ name: Rust
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Run Day 1
-      run: cargo run --verbose
-      working-directory: day01
+      - name: Run Day 1
+        run: cargo run --verbose
+        working-directory: day01
 
-    - name: Run tests Day 1
-      run: cargo test --verbose
-      working-directory: day01
+      - name: Run tests Day 1
+        run: cargo test --verbose
+        working-directory: day01
 
+      - name: Run Day 2
+        run: cargo run --verbose
+        working-directory: day02
 
-    - name: Run Day 2
-      run: cargo run --verbose
-      working-directory: day02
+      - name: Run tests Day 2
+        run: cargo test --verbose
+        working-directory: day02
 
-    - name: Run tests Day 2
-      run: cargo test --verbose
-      working-directory: day02
+      - name: Run Day 3
+        run: cargo run --verbose
+        working-directory: day03
 
+      - name: Run tests Day 3
+        run: cargo test --verbose
+        working-directory: day03
 
-    - name: Run Day 3
-      run: cargo run --verbose
-      working-directory: day03
+      - name: Run Day 4
+        run: cargo run --verbose
+        working-directory: day04
 
-    - name: Run tests Day 3
-      run: cargo test --verbose
-      working-directory: day03
+      - name: Run tests Day 4
+        run: cargo test --verbose
+        working-directory: day04
