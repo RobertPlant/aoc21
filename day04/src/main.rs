@@ -1,6 +1,6 @@
 mod input;
 
-fn calc(input: &'static str) -> usize {
+fn parse(input: &'static str) -> (Vec<usize>, Vec<Vec<usize>>) {
     let board_offset = 1;
     let board_size = 5;
     let call_sequence: Vec<usize> = input
@@ -45,6 +45,12 @@ fn calc(input: &'static str) -> usize {
         line_index += 1;
     }
 
+    (call_sequence, solutions)
+}
+
+fn calc(input: &'static str) -> usize {
+    let (call_sequence, mut solutions) = parse(input);
+
     for number in call_sequence {
         for (i, r) in solutions.clone().iter().enumerate() {
             for (vi, v) in r.iter().enumerate() {
@@ -71,11 +77,48 @@ fn calc(input: &'static str) -> usize {
     0
 }
 
+fn calc_p2(input: &'static str) -> usize {
+    let (call_sequence, mut solutions) = parse(input);
+    let mut boards_complete = vec![1; solutions.len() / 10];
+
+    for number in call_sequence {
+        for (i, r) in solutions.clone().iter().enumerate() {
+            for (vi, v) in r.iter().enumerate() {
+                if v == &number {
+                    solutions[i][vi] = 0;
+                }
+            }
+        }
+
+        let maybe_winning_board = boards_complete.iter().position(|&b| b == 1).unwrap();
+
+        for (i, r) in solutions.iter().enumerate() {
+            if r.iter().sum::<usize>() == 0 {
+                let solution_start_of_points = i / 10;
+
+                boards_complete[solution_start_of_points] = 0;
+            }
+        }
+
+        if boards_complete.iter().sum::<usize>() == 0 {
+            let mut sum = 0;
+
+            for r in solutions.iter().skip(maybe_winning_board * 10).take(5) {
+                sum += r.iter().sum::<usize>();
+            }
+
+            return sum * number;
+        }
+    }
+
+    0
+}
+
 fn main() {
     let input_data = input::get_input();
 
     println!("Found {:?}", calc(input_data));
-    //println!("Found P2 {:?}", calc_p2(input_data));
+    println!("Found P2 {:?}", calc_p2(input_data));
 }
 
 #[cfg(test)]
@@ -107,6 +150,34 @@ mod tests {
  2  0 12  3  7"
             ),
             4512
+        )
+    }
+
+    #[test]
+    fn test_p2() {
+        assert_eq!(
+            calc_p2(
+                "7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
+
+22 13 17 11  0
+ 8  2 23  4 24
+21  9 14 16  7
+ 6 10  3 18  5
+ 1 12 20 15 19
+
+ 3 15  0  2 22
+ 9 18 13 17  5
+19  8  7 25 23
+20 11 10 24  4
+14 21 16 12  6
+
+14 21 17 24  4
+10 16 15  9 19
+18  8 23 26 20
+22 11 13  6  5
+ 2  0 12  3  7"
+            ),
+            1924
         )
     }
 }
