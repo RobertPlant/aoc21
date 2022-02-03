@@ -41,6 +41,52 @@ fn calc(input: &'static str, days: usize) -> usize {
     flash_count
 }
 
+fn calc_p2(input: &'static str, days: usize) -> usize {
+    let mut grid: Vec<Vec<usize>> = input
+        .lines()
+        .map(|l| {
+            l.chars()
+                .map(|c| c.to_digit(10).unwrap() as usize)
+                .collect()
+        })
+        .collect();
+    let height = grid.len();
+    let width = grid[0].len();
+
+    for day in 0..days {
+        grid = grid
+            .iter()
+            .map(|line| line.iter().map(|item| item + 1).collect())
+            .collect();
+
+        grid = flash(grid);
+
+        if (width * height)
+            == grid
+                .iter()
+                .map(|l| {
+                    l.iter()
+                        .map(|i| if *i >= 200 { 1 } else { 0 })
+                        .sum::<usize>()
+                })
+                .sum::<usize>()
+        {
+            return day + 1;
+        }
+
+        grid = grid
+            .iter()
+            .map(|line| {
+                line.iter()
+                    .map(|item| if *item > 9 { 0 } else { *item })
+                    .collect()
+            })
+            .collect();
+    }
+
+    panic!("Did not find solution")
+}
+
 fn flash(grid: Vec<Vec<usize>>) -> Vec<Vec<usize>> {
     let updated_grid: Vec<Vec<usize>> = grid
         .iter()
@@ -108,7 +154,7 @@ fn main() {
     let input_data = input::get_input();
 
     println!("Found {:?}", calc(input_data, 100));
-    // println!("Found P2 {:?}", calc_p2(input_data));
+    println!("Found P2 {:?}", calc_p2(input_data, 1000));
 }
 
 #[cfg(test)]
@@ -146,5 +192,10 @@ mod tests {
     #[test]
     fn test_4() {
         assert_eq!(calc(get_input(), 4), 96)
+    }
+
+    #[test]
+    fn test_p2() {
+        assert_eq!(calc_p2(get_input(), 200), 195)
     }
 }
