@@ -103,3 +103,11 @@ jobs:
       - name: Run tests Day 11
         run: cargo test --verbose
         working-directory: day11
+
+      - name: Run Day 12
+        run: cargo run --verbose
+        working-directory: day12
+
+      - name: Run tests Day 12
+        run: cargo test --verbose
+        working-directory: day12
