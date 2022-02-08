@@ -31,8 +31,8 @@ fn calc(input: &'static str, num_of_folds: usize) -> usize {
         })
         .collect::<Vec<(usize, usize)>>();
 
-    let width = dots.iter().fold(0, |acc, v| max(acc, v.0)) + 1;
-    let height = dots.iter().fold(0, |acc, v| max(acc, v.1)) + 1;
+    let width = folds.iter().find(|f| f.0 > 0).unwrap().0 * 2 + 1;
+    let height = folds.iter().find(|f| f.1 > 0).unwrap().1 * 2 + 1;
 
     let mut grid = vec![vec![0; width]; height];
 
@@ -47,24 +47,32 @@ fn calc(input: &'static str, num_of_folds: usize) -> usize {
 
             grid.iter_mut().for_each(|l| l.resize(f.0, 0));
 
-            for (row_i, row) in second_half.iter().enumerate() {
-                for (column_i, column) in row.iter().rev().enumerate() {
-                    grid[row_i][column_i] = max(grid[row_i][column_i], *column);
-                }
-            }
+            second_half.iter().enumerate().for_each(|(row_i, row)| {
+                row.iter().rev().enumerate().for_each(|(column_i, column)| {
+                    grid[row_i][column_i] = max(grid[row_i][column_i], *column)
+                })
+            });
         }
 
         if f.1 > 0 {
             let second_half = grid.split_off(f.1 + 1);
             grid.resize(f.1, vec![0]);
 
-            for (row_i, row) in second_half.iter().rev().enumerate() {
-                for (column_i, column) in row.iter().enumerate() {
-                    grid[row_i][column_i] = max(grid[row_i][column_i], *column);
-                }
-            }
+            second_half
+                .iter()
+                .rev()
+                .enumerate()
+                .for_each(|(row_i, row)| {
+                    row.iter().enumerate().for_each(|(column_i, column)| {
+                        grid[row_i][column_i] = max(grid[row_i][column_i], *column)
+                    })
+                });
         }
     });
+
+    if num_of_folds > 2 {
+        grid.iter().for_each(|l| println!("{:?}", l));
+    }
 
     grid.iter().map(|r| r.iter().sum::<usize>()).sum()
 }
@@ -73,7 +81,8 @@ fn main() {
     let input_data = input::get_input();
 
     println!("Found {:?}", calc(input_data, 1));
-    // println!("Found P2 {:?}", calc_p2(input_data));
+    println!("Found P2");
+    calc(input_data, 12);
 }
 
 #[cfg(test)]
@@ -110,6 +119,7 @@ fold along x=5",
             17
         )
     }
+
     #[test]
     fn test_x() {
         assert_eq!(
